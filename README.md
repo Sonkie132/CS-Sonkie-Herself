@@ -6,7 +6,7 @@ Self insert pack or smth.
  
 -Some polish by Morishiko
  
--Jear The Pear for helping importing the model and new textures
+-Jear The Pear for helping importing the model and new textures AND aslo the moveset!
 
 -Wall_E20 for Pose on CS menu Code (and pose itself)
 
