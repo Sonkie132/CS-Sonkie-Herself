@@ -73,7 +73,8 @@ local ANIMTABLE_SONKS = {
             [CHAR_ANIM_IDLE_HEAD_CENTER] = 'sonks_center',
             [CHAR_ANIM_IDLE_HEAD_LEFT] = 'sonks_center',
             [CHAR_ANIM_IDLE_HEAD_RIGHT] = 'sonks_center',
-			[CHAR_ANIM_RETURN_FROM_STAR_DANCE] = 'sonks_fast_ledge_grab',
+	    [CHAR_ANIM_RETURN_FROM_STAR_DANCE] = 'sonks_fast_ledge_grab',
+            [CHAR_ANIM_RUNNING] = 'sonks_run',
 }
 
 if _G.charSelectExists then
