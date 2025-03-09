@@ -73,14 +73,17 @@ local ANIMTABLE_SONKS = {
             [CHAR_ANIM_IDLE_HEAD_CENTER] = 'sonks_center',
             [CHAR_ANIM_IDLE_HEAD_LEFT] = 'sonks_center',
             [CHAR_ANIM_IDLE_HEAD_RIGHT] = 'sonks_center',
+			[CHAR_ANIM_RETURN_FROM_STAR_DANCE] = 'sonks_fast_ledge_grab',
 }
 
+if _G.charSelectExists then
+    CT_SONKS = _G.charSelect.character_add("Sonkie", {"The dude who has the weirdest hair shape ever"}, "Model: Pizizito Model fixes: Morishiko, JairThePear", {r = 92, g = 190, b = 255},  E_MODEL_SONKS, CT_LUIGI, TEX_SONKS_ICON, 1.0, SONKS_OFFSET) 
+end
 
 local CSloaded = false
 local function on_character_select_load()
-    CT_SONKS = _G.charSelect.character_add("Sonkie", {"The dude who has the weirdest hair shape ever"}, "Model: Pizizito Model fixes: Morishiko, JairThePear", {r = 92, g = 190, b = 255},  E_MODEL_SONKS, CT_LUIGI, TEX_SONKS_ICON, 1.0, SONKS_OFFSET)
     _G.charSelect.character_add_voice(E_MODEL_SONKS, VOICETABLE_SONKS)
-	    _G.charSelect.character_add_celebration_star(E_MODEL_SONKS, E_MODEL_WOODEN_SIGNPOST)
+	_G.charSelect.character_add_celebration_star(E_MODEL_SONKS, E_MODEL_WOODEN_SIGNPOST)
 	_G.charSelect.character_add_palette_preset(E_MODEL_SONKS, PALETTE_SONKS)
 	_G.charSelect.character_add_animations(E_MODEL_SONKS, ANIMTABLE_SONKS)
 
@@ -109,6 +112,9 @@ if _G.charSelect.is_menu_open() and
 	m.marioBodyState.handState = MARIO_HAND_OPEN
 	end
 end
+
+hook_event(HOOK_MARIO_UPDATE, menupose)
+
 
 
 
