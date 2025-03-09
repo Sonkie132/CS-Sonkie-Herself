@@ -14,4 +14,6 @@ Self insert pack or smth.
 
 -Character Select made by Squishy6094 here: https://github.com/Squishy6094/character-select-coop
 
+-Wibblus for letting me use the bowser running anim
+
 Hope u have fun whit this dude!
