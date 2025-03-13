@@ -10,7 +10,7 @@ function sonks_update(m)
     end
 
     -- midair jump
-    local shouldMidairJump = (m.action == ACT_JUMP or m.action == ACT_DOUBLE_JUMP or m.action == ACT_HOLD_JUMP or m.action == ACT_LONG_JUMP or m.action == ACT_DIVE) and ((m.input & INPUT_A_PRESSED) ~= 0 and m.vel.y < 4)
+    local shouldMidairJump = (m.action == ACT_JUMP or m.action == ACT_DOUBLE_JUMP or m.action == ACT_HOLD_JUMP or m.action == ACT_LONG_JUMP or m.action == ACT_DIVE or m.action == ACT_FREEFALL) and ((m.input & INPUT_A_PRESSED) ~= 0 and m.vel.y < 4)
     if shouldMidairJump and sonkDoubleJump == true then
         m.faceAngle.y = m.intendedYaw
         m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
@@ -28,7 +28,7 @@ function sonks_update(m)
     -- wall bump to spin
     if m.action == ACT_BACKWARD_AIR_KB and (m.input & INPUT_A_DOWN) ~= 0 then
         sonkSpin = true
-        m.vel.y = 100
+        m.vel.y = 80
         m.forwardVel = -1
         set_mario_action(m, ACT_TWIRLING, 0)
     end
