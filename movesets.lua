@@ -5,10 +5,6 @@ local ACT_SONK_GP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKIN
 function sonks_update(m)
     m.peakHeight = m.pos.y -- no fall damage
 
-    if m.playerIndex == 0 then -- always capless
-        m.flags = m.flags & ~(MARIO_NORMAL_CAP | MARIO_CAP_ON_HEAD)
-    end
-
     -- midair jump
     local shouldMidairJump = (m.action == ACT_JUMP or m.action == ACT_DOUBLE_JUMP or m.action == ACT_HOLD_JUMP or m.action == ACT_LONG_JUMP or m.action == ACT_DIVE or m.action == ACT_FREEFALL) and ((m.input & INPUT_A_PRESSED) ~= 0 and m.vel.y < 4)
     if shouldMidairJump and sonkDoubleJump == true then
