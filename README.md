@@ -20,4 +20,6 @@ Self insert pack or smth.
 
 -Sonic the 64 for model importing
 
+-Trashcam for the Star dance anim
+
 Hope u have fun whit this dude!
