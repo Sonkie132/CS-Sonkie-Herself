@@ -1,6 +1,8 @@
 Self insert pack or smth.
 
 -- Credits --
+
+-Frijoles.z64 For letting me use yumi Idle anim!
  
 -Model by Pizizito
  
@@ -15,5 +17,7 @@ Self insert pack or smth.
 -Character Select made by Squishy6094 here: https://github.com/Squishy6094/character-select-coop
 
 -Wibblus for letting me use the bowser running anim
+
+-Sonic the 64 for model importing
 
 Hope u have fun whit this dude!
