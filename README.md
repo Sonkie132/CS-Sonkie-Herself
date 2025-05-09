@@ -1,25 +1,11 @@
-Self insert pack or smth.
+Da pretty Lil Lady! and also horny (because of her horns duh.)
 
 -- Credits --
 
--Frijoles.z64 For letting me use yumi Idle anim!
- 
--Model by Pizizito
- 
--Some polish by Morishiko
- 
--Jear The Pear for helping importing the model and new textures AND aslo the moveset! (shoutouts to coolio for the groundpound tho)
+-- Jer The Pear For model, anims and Moveset
 
--Wall_E20 for Pose on CS menu Code (and pose itself)
+-- Squishy For Creating Character Select
 
--Voice acted by yours truly
+-- Spr For Squishy Plushie Model
 
--Character Select made by Squishy6094 here: https://github.com/Squishy6094/character-select-coop
-
--Wibblus for letting me use the bowser running anim
-
--Sonic the 64 for model importing
-
--Trashcam for the Star dance anim
-
-Hope u have fun whit this dude!
+-- Myself for some tweaks to moveset and visual effects :3
