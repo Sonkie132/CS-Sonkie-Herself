@@ -1,4 +1,5 @@
 local ACT_SONK_GP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_MOVING | ACT_FLAG_AIR)
+local ACT_WALL_SLIDE = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 
 local gSonkExtraStates = {}
 for i = 0, MAX_PLAYERS - 1 do
@@ -9,6 +10,47 @@ for i = 0, MAX_PLAYERS - 1 do
 end
 
 -- CUSTOM ACTIONS --
+
+local function act_wall_slide(m)
+    if (m.input & INPUT_A_PRESSED) ~= 0 then
+        local rc = set_mario_action(m, ACT_WALL_KICK_AIR, 0)
+        m.vel.y = 72.0
+
+        if m.forwardVel < 20.0 then
+            m.forwardVel = 20.0
+        end
+        m.wallKickTimer = 0
+        return rc
+    end
+
+    -- attempt to stick to the wall a bit. if it's 0, sometimes you'll get kicked off of slightly sloped walls
+    mario_set_forward_vel(m, -1.0)
+
+    m.particleFlags = m.particleFlags | PARTICLE_DUST
+
+    play_sound(SOUND_MOVING_TERRAIN_SLIDE + m.terrainSoundAddend, m.marioObj.header.gfx.cameraToObject)
+    set_mario_animation(m, MARIO_ANIM_START_WALLKICK)
+
+    if perform_air_step(m, 0) == AIR_STEP_LANDED then
+        mario_set_forward_vel(m, 0.0)
+        if check_fall_damage_or_get_stuck(m, ACT_HARD_BACKWARD_GROUND_KB) == 0 then
+            return set_mario_action(m, ACT_FREEFALL_LAND, 0)
+        end
+    end
+
+    m.actionTimer = m.actionTimer + 1
+    if m.wall == nil and m.actionTimer > 2 then
+        mario_set_forward_vel(m, 0.0)
+        return set_mario_action(m, ACT_FREEFALL, 0)
+    end
+
+    -- gravity
+    m.vel.y = m.vel.y + 2
+
+    return 0
+end
+
+hook_mario_action(ACT_WALL_SLIDE, act_wall_slide)
 
 function act_sonkie_ground_pound(m)
     play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED)
@@ -95,6 +137,7 @@ function sonk_on_set_action(m)
     -- ground pound
     if m.action == ACT_GROUND_POUND then
         set_mario_action(m, ACT_SONK_GP, 0)
+
     end
     -- wall spin
     if m.action == ACT_BACKWARD_AIR_KB and (m.input & INPUT_A_DOWN) ~= 0 then
@@ -102,6 +145,14 @@ function sonk_on_set_action(m)
         m.vel.y = 80
         m.forwardVel = -1
         set_mario_action(m, ACT_TWIRLING, 0)
+    end
+    -- wall slide
+    if m.action == ACT_SOFT_BONK then
+        m.faceAngle.y = m.faceAngle.y + 0x8000
+        set_mario_action(m, ACT_WALL_SLIDE, 0)
+        m.vel.x = 0
+        m.vel.y = 0
+        m.vel.z = 0
     end
 end
 
@@ -126,7 +177,7 @@ function sonk_update(m)
         s.sonkDoubleJump = true
     end
     -- Wings thing
-    if m.action == ACT_SPECIAL_TRIPLE_JUMP or m.action == ACT_VERTICAL_WIND or m.action == ACT_TWIRLING then
+    if m.action == ACT_SPECIAL_TRIPLE_JUMP or m.action == ACT_VERTICAL_WIND or m.action == ACT_TWIRLING or m.action == ACT_DIVE then
         m.marioBodyState.capState = MARIO_HAS_WING_CAP_ON
     end
     -- Eyes Stuff
