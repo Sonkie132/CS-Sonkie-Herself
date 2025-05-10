@@ -55,20 +55,22 @@ hook_mario_action(ACT_WALL_SLIDE, act_wall_slide)
 function act_sonkie_ground_pound(m)
     play_sound_if_no_flag(m, SOUND_ACTION_THROW, MARIO_ACTION_SOUND_PLAYED)
 
-    set_mario_animation(m, m.actionArg == 0 and MARIO_ANIM_START_GROUND_POUND
+    set_mario_animation(m, m.actionArg == 0 and MARIO_ANIM_FORWARD_SPINNING
                                              or MARIO_ANIM_TRIPLE_JUMP_GROUND_POUND)
     if (m.actionTimer == 0) then
-        m.forwardVel = m.forwardVel * 2
+        --m.forwardVel = m.forwardVel * 2
         play_character_sound(m, CHAR_SOUND_GROUND_POUND_WAH)
         play_sound(SOUND_ACTION_SPIN, m.marioObj.header.gfx.cameraToObject)
     end
-    m.actionTimer = m.actionTimer+1
+
+    m.vel.y = m.vel.y - 1
+    m.forwardVel = m.forwardVel + 0.1
     
     if is_anim_at_end(m) ~= 0 then
-        m.actionTimer = 1
-        m.actionState = 1
+        --m.actionTimer = 1
+        --m.actionState = 1
         play_sound(SOUND_ACTION_SPIN, m.marioObj.header.gfx.cameraToObject)
-        set_anim_to_frame(m, 0)
+        --set_anim_to_frame(m, 0)
     end
 
     if (m.input & INPUT_NONZERO_ANALOG) ~= 0 then
@@ -96,33 +98,32 @@ function act_sonkie_ground_pound(m)
             play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING)
             if check_fall_damage(m, ACT_HARD_BACKWARD_GROUND_KB) == 0 then
                 set_mario_particle_flags(m, (PARTICLE_MIST_CIRCLE | PARTICLE_HORIZONTAL_STAR), false)
-                m.vel.y = math.abs(m.vel.y)
+                m.vel.y = math.abs(m.vel.y)*0.9
+                --[[
                 if m.forwardVel < 0 then
                     m.forwardVel = -m.forwardVel
                     m.faceAngle.y = m.faceAngle.y - 32768
                 end
-                if m.action == ACT_SONK_GP and (m.input & INPUT_Z_DOWN) ~= 0 then
+                ]]
+                if m.action == ACT_SONK_GP and (m.input & INPUT_A_DOWN) ~= 0 then
                     set_mario_action(m, ACT_DIVE, 0)
-					mario_set_forward_vel(m, 60)
+                    play_character_sound(m, CHAR_SOUND_HOOHOO)
+					--mario_set_forward_vel(m, m.forwardVel + 5)
                 else
                     set_mario_action(m, ACT_GROUND_POUND_LAND, 0)
                 end
             end
         end
-        if m.playerIndex == 0 then set_camera_shake_from_hit(SHAKE_GROUND_POUND) end
+        if m.playerIndex == 0 then
+            set_camera_shake_from_hit(SHAKE_GROUND_POUND)
+        end
     elseif stepResult == AIR_STEP_HIT_WALL then
-        --if gLevelValues.fixCollisionBugs and gLevelValues.fixCollisionBugsGroundPoundBonks then
-        --    -- do nothing
-        --else
-            mario_set_forward_vel(m, -16)
-            -- if (m.vel.y > 0) then
-            --     m.vel.y = 0
-            -- end
+        mario_set_forward_vel(m, -16)
 
-            set_mario_particle_flags(m, PARTICLE_VERTICAL_STAR, false)
-            set_mario_action(m, ACT_BACKWARD_AIR_KB, 0)
-        --end
+        set_mario_particle_flags(m, PARTICLE_VERTICAL_STAR, false)
+        set_mario_action(m, ACT_BACKWARD_AIR_KB, 0)
     end
+    m.actionTimer = m.actionTimer + 1
     
     return false
 end
@@ -140,11 +141,10 @@ function sonk_on_set_action(m)
 
     end
     -- wall spin
-    if m.action == ACT_BACKWARD_AIR_KB and (m.input & INPUT_A_DOWN) ~= 0 and m.wall ~= nil then
+    if m.action == ACT_BACKWARD_AIR_KB and ((m.input & INPUT_A_DOWN) ~= 0 or m.prevAction == ACT_SONK_GP) and m.wall ~= nil then
         s.sonkSpin = true
         m.vel.y = 80
         m.faceAngle.y = atan2s(m.wall.normal.z, m.wall.normal.x)
-        --m.forwardVel = 10
         set_mario_action(m, ACT_TWIRLING, 0)
     end
     -- wall slide
@@ -235,7 +235,7 @@ function sonk_update(m)
         m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
         set_mario_action(m, ACT_SPECIAL_TRIPLE_JUMP, 0)
         m.vel.y = 50
-        m.forwardVel = 5
+        --m.forwardVel = 5
         s.sonkDoubleJump = false
     end
     -- reset midair jump
@@ -273,11 +273,18 @@ function sonk_update(m)
     end
 
     -- wind
-    if m.action == ACT_DIVE and m.pos.y > m.floorHeight and m.vel.y < 0 and (m.input & INPUT_Z_PRESSED) ~= 0 then
-        m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
-        set_mario_action(m, ACT_VERTICAL_WIND, 0)
-        m.forwardVel = m.forwardVel + 3
-        m.vel.y = 35
+    if m.action == ACT_DIVE then
+        if m.vel.y < 0 and (m.input & INPUT_A_PRESSED) ~= 0 then
+            m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
+            set_mario_action(m, ACT_VERTICAL_WIND, 0)
+            m.forwardVel = m.forwardVel + 3
+            m.vel.y = 35
+        end
+        --[[
+        if (m.input & INPUT_Z_PRESSED) ~= 0 then
+            set_mario_action(m, ACT_SONK_GP, 0)
+        end
+        ]]
     end
 end
 
