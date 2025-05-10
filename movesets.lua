@@ -140,10 +140,11 @@ function sonk_on_set_action(m)
 
     end
     -- wall spin
-    if m.action == ACT_BACKWARD_AIR_KB and (m.input & INPUT_A_DOWN) ~= 0 then
+    if m.action == ACT_BACKWARD_AIR_KB and (m.input & INPUT_A_DOWN) ~= 0 and m.wall ~= nil then
         s.sonkSpin = true
         m.vel.y = 80
-        m.forwardVel = -1
+        m.faceAngle.y = atan2s(m.wall.normal.z, m.wall.normal.x)
+        --m.forwardVel = 10
         set_mario_action(m, ACT_TWIRLING, 0)
     end
     -- wall slide
