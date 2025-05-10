@@ -112,6 +112,11 @@ local ANIMTABLE_SONKIE = {
         [CHAR_ANIM_IDLE_HEAD_CENTER] = 'sonkie_stealed_jess_idle',
         [CHAR_ANIM_IDLE_HEAD_LEFT] = 'sonkie_stealed_jess_idle',
         [CHAR_ANIM_IDLE_HEAD_RIGHT] = 'sonkie_stealed_jess_idle',
+        [CHAR_ANIM_RUNNING] = "sonkie_run",
+        [CHAR_ANIM_TRIPLE_JUMP] = 'sonkie_spinn',
+        [CHAR_ANIM_START_RIDING_SHELL] = 'sonkie_start_riding_shell',
+        [CHAR_ANIM_RIDING_SHELL] = 'sonkie_riding_shell',
+        [CHAR_ANIM_JUMP_RIDING_SHELL] = 'sonkie_jump_shell',
         [charSelect.CS_ANIM_MENU] = "sonkie_menupose",
 }
 
@@ -133,7 +138,7 @@ local SONKIE_HEALTH_METER = {
 }
 
 if _G.charSelectExists then
-    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty tiny Demon lady is here to collect Some Stars!, :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
+    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty tiny Demon lady is here to collect Some Stars! :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
 end
 
 local CSloaded = false
