@@ -105,10 +105,10 @@ function act_sonkie_ground_pound(m)
                     m.faceAngle.y = m.faceAngle.y - 32768
                 end
                 ]]
-                if m.action == ACT_SONK_GP and (m.input & INPUT_A_DOWN) ~= 0 then
+                if m.action == ACT_SONK_GP and (m.input & INPUT_Z_DOWN) ~= 0 then
                     set_mario_action(m, ACT_DIVE, 0)
                     play_character_sound(m, CHAR_SOUND_HOOHOO)
-					--mario_set_forward_vel(m, m.forwardVel + 5)
+					mario_set_forward_vel(m, m.forwardVel + 5)
                 else
                     set_mario_action(m, ACT_GROUND_POUND_LAND, 0)
                 end
@@ -180,13 +180,14 @@ local actEyeStates = {
     [ACT_STAR_DANCE_NO_EXIT] = MARIO_EYES_LOOK_UP,
     [ACT_FLYING_TRIPLE_JUMP] = MARIO_EYES_LOOK_UP,
     [ACT_FLYING] = MARIO_EYES_LOOK_UP,
+    [ACT_BACKFLIP] = MARIO_EYES_LOOK_UP,
+    [ACT_LEDGE_GRAB] = MARIO_EYES_LOOK_UP,
     -- Look Dead
     [ACT_SPECIAL_TRIPLE_JUMP] = MARIO_EYES_DEAD,
     [ACT_TRIPLE_JUMP] = MARIO_EYES_DEAD,
     [ACT_TWIRLING] = MARIO_EYES_DEAD,
     [ACT_SONK_GP] = MARIO_EYES_DEAD,
     [ACT_VERTICAL_WIND] = MARIO_EYES_DEAD,
-    [ACT_LEDGE_GRAB] = MARIO_EYES_DEAD,
     [ACT_FORWARD_ROLLOUT] = MARIO_EYES_DEAD,
     [ACT_BACKWARD_ROLLOUT] = MARIO_EYES_DEAD,
     [ACT_TWIRL_LAND] = MARIO_EYES_DEAD,
@@ -194,6 +195,7 @@ local actEyeStates = {
     [ACT_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
     [ACT_HARD_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
     [ACT_HARD_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
+    [16910512] = MARIO_EYES_DEAD,
     -- Look Right
     [ACT_TURNING_AROUND] = MARIO_EYES_LOOK_RIGHT,
     -- Look Closed
@@ -202,6 +204,7 @@ local actEyeStates = {
     [ACT_MOVE_PUNCHING] = MARIO_EYES_CLOSED,
     [ACT_TRIPLE_JUMP_LAND] = MARIO_EYES_CLOSED,
     [ACT_SOFT_BONK] = MARIO_EYES_CLOSED,
+    [ACT_LONG_JUMP] = MARIO_EYES_CLOSED,
 }
 
 local actHandStates = {
@@ -220,6 +223,7 @@ local actHandStates = {
     [ACT_SLIDE_KICK] = MARIO_HAND_OPEN,
     [ACT_DOUBLE_JUMP] = MARIO_HAND_OPEN,
     [ACT_TRIPLE_JUMP] = MARIO_HAND_OPEN,
+    [ACT_BACKFLIP] = MARIO_HAND_OPEN,
 }
 
 function sonk_update(m)
