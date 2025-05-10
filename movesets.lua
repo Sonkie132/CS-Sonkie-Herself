@@ -156,6 +156,71 @@ function sonk_on_set_action(m)
     end
 end
 
+local actCapStates = {
+    [ACT_SPECIAL_TRIPLE_JUMP] = MARIO_HAS_WING_CAP_ON,
+    [ACT_TRIPLE_JUMP] = MARIO_HAS_WING_CAP_ON,
+    [ACT_VERTICAL_WIND] = MARIO_HAS_WING_CAP_ON,
+    [ACT_TWIRLING] = MARIO_HAS_WING_CAP_ON,
+    [ACT_DIVE] = MARIO_HAS_WING_CAP_ON,
+}
+
+local actEyeStates = {
+    -- Look Down
+    [ACT_FREEFALL] = MARIO_EYES_LOOK_DOWN,
+    [ACT_FREEFALL_LAND] = MARIO_EYES_LOOK_DOWN,
+    [ACT_DOUBLE_JUMP_LAND] = MARIO_EYES_LOOK_DOWN,
+    [ACT_FALL_AFTER_STAR_GRAB] = MARIO_EYES_LOOK_DOWN,
+    [ACT_JUMP_LAND] = MARIO_EYES_LOOK_DOWN,
+    [ACT_SIDE_FLIP_LAND] = MARIO_EYES_LOOK_DOWN,
+    [ACT_GROUND_POUND_LAND] = MARIO_EYES_LOOK_DOWN,
+    [ACT_WALL_KICK_AIR] = MARIO_EYES_LOOK_DOWN,
+    -- Look Up
+    [ACT_DOUBLE_JUMP] = MARIO_EYES_LOOK_UP,
+    [ACT_STAR_DANCE_NO_EXIT] = MARIO_EYES_LOOK_UP,
+    [ACT_FLYING_TRIPLE_JUMP] = MARIO_EYES_LOOK_UP,
+    [ACT_FLYING] = MARIO_EYES_LOOK_UP,
+    -- Look Dead
+    [ACT_SPECIAL_TRIPLE_JUMP] = MARIO_EYES_DEAD,
+    [ACT_TRIPLE_JUMP] = MARIO_EYES_DEAD,
+    [ACT_TWIRLING] = MARIO_EYES_DEAD,
+    [ACT_SONK_GP] = MARIO_EYES_DEAD,
+    [ACT_VERTICAL_WIND] = MARIO_EYES_DEAD,
+    [ACT_LEDGE_GRAB] = MARIO_EYES_DEAD,
+    [ACT_FORWARD_ROLLOUT] = MARIO_EYES_DEAD,
+    [ACT_BACKWARD_ROLLOUT] = MARIO_EYES_DEAD,
+    [ACT_TWIRL_LAND] = MARIO_EYES_DEAD,
+    [ACT_GROUND_BONK] = MARIO_EYES_DEAD,
+    [ACT_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
+    [ACT_HARD_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
+    [ACT_HARD_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
+    -- Look Right
+    [ACT_TURNING_AROUND] = MARIO_EYES_LOOK_RIGHT,
+    -- Look Closed
+    [ACT_JUMP_KICK] = MARIO_EYES_CLOSED,
+    [ACT_PUNCHING] = MARIO_EYES_CLOSED,
+    [ACT_MOVE_PUNCHING] = MARIO_EYES_CLOSED,
+    [ACT_TRIPLE_JUMP_LAND] = MARIO_EYES_CLOSED,
+    [ACT_SOFT_BONK] = MARIO_EYES_CLOSED,
+}
+
+local actHandStates = {
+    [ACT_FREEFALL] = MARIO_HAND_OPEN,
+    [ACT_FREEFALL_LAND] = MARIO_HAND_OPEN,
+    [ACT_LONG_JUMP] = MARIO_HAND_OPEN,
+    [ACT_DIVE] = MARIO_HAND_OPEN,
+    [ACT_TRIPLE_JUMP_LAND] = MARIO_HAND_OPEN,
+    [ACT_DOUBLE_JUMP_LAND] = MARIO_HAND_OPEN,
+    [ACT_FALL_AFTER_STAR_GRAB] = MARIO_HAND_OPEN,
+    [ACT_JUMP_LAND] = MARIO_HAND_OPEN,
+    [ACT_SIDE_FLIP_LAND] = MARIO_HAND_OPEN,
+    [ACT_GROUND_POUND_LAND] = MARIO_HAND_OPEN,
+    [ACT_WALL_KICK_AIR] = MARIO_HAND_OPEN,
+    [ACT_SLIDE_KICK_SLIDE] = MARIO_HAND_OPEN,
+    [ACT_SLIDE_KICK] = MARIO_HAND_OPEN,
+    [ACT_DOUBLE_JUMP] = MARIO_HAND_OPEN,
+    [ACT_TRIPLE_JUMP] = MARIO_HAND_OPEN,
+}
+
 function sonk_update(m)
     local s = gSonkExtraStates[m.playerIndex]
 
@@ -176,39 +241,28 @@ function sonk_update(m)
     if m.pos.y == m.floorHeight then
         s.sonkDoubleJump = true
     end
-    -- Wings thing
-    if m.action == ACT_SPECIAL_TRIPLE_JUMP or m.action == ACT_TRIPLE_JUMP or m.action == ACT_VERTICAL_WIND or m.action == ACT_TWIRLING or m.action == ACT_DIVE then
-        m.marioBodyState.capState = MARIO_HAS_WING_CAP_ON
+
+    -- Cap, Wing, and Hand States
+    if actCapStates[m.action] then
+        m.marioBodyState.capState = actCapStates[m.action]
     end
-    -- Eyes Stuff
-    if m.action == ACT_FREEFALL or m.action == ACT_FREEFALL_LAND or m.action == ACT_DOUBLE_JUMP_LAND or m.action == ACT_FALL_AFTER_STAR_GRAB or m.action == ACT_JUMP_LAND or m.action == ACT_SIDE_FLIP_LAND or m.action == ACT_GROUND_POUND_LAND or m.action == ACT_WALL_KICK_AIR then
-        m.marioBodyState.eyeState = MARIO_EYES_LOOK_DOWN
+    if actEyeStates[m.action] then
+        m.marioBodyState.eyeState = actEyeStates[m.action]
     end
-    if m.action == ACT_DOUBLE_JUMP or m.action == ACT_STAR_DANCE_NO_EXIT or m.action == ACT_FLYING_TRIPLE_JUMP or m.action == ACT_FLYING then
-        m.marioBodyState.eyeState = MARIO_EYES_LOOK_UP
-    end
-    if m.action == ACT_SPECIAL_TRIPLE_JUMP or m.action == ACT_TRIPLE_JUMP or m.action == ACT_TWIRLING or m.action == ACT_SONK_GP or m.action == ACT_VERTICAL_WIND or m.action == ACT_LEDGE_GRAB or m.action == ACT_FORWARD_ROLLOUT or m.action == ACT_BACKWARD_ROLLOUT or m.action == ACT_TWIRL_LAND or m.action == ACT_GROUND_BONK or m.action == ACT_BACKWARD_GROUND_KB or m.action == ACT_HARD_BACKWARD_GROUND_KB or m.action == ACT_HARD_BACKWARD_GROUND_KB or m.action == 16910512 then
-        m.marioBodyState.eyeState = MARIO_EYES_DEAD
-    end        
-    if m.action == ACT_JUMP_KICK or m.action == ACT_KICK or m.action == ACT_PUNCHING or m.action == ACT_MOVE_PUNCHING or m.action == ACT_TRIPLE_JUMP_LAND or m.action == ACT_SOFT_BONK then
-        m.marioBodyState.eyeState = MARIO_EYES_CLOSED
-    end
-    if m.action == ACT_TURNING_AROUND or m.action == ACT_TURNING then
-        m.marioBodyState.eyeState = MARIO_EYES_LOOK_RIGHT
-    end
-    -- Hands Things
-    if m.action == ACT_FREEFALL or m.action == ACT_FREEFALL_LAND or m.action == ACT_LONG_JUMP or m.action == ACT_DIVE or m.action == ACT_TRIPLE_JUMP_LAND or m.action == ACT_DOUBLE_JUMP_LAND or m.action == ACT_FALL_AFTER_STAR_GRAB or m.action == ACT_JUMP_LAND or m.action == ACT_SIDE_FLIP_LAND or m.action == ACT_GROUND_POUND_LAND or m.action == ACT_WALL_KICK_AIR or m.action == ACT_SLIDE_KICK_SLIDE or m.action == ACT_SLIDE_KICK or m.action == ACT_DOUBLE_JUMP or m.action == ACT_TRIPLE_JUMP then
-        m.marioBodyState.handState = MARIO_HAND_OPEN
+    if actHandStates[m.action] then
+        m.marioBodyState.handState = actHandStates[m.action]
     end      
+
     -- disable tilt
     if m.action == ACT_WALKING then
         m.marioBodyState.torsoAngle.x = 0
         m.marioBodyState.torsoAngle.z = 0
     end
-    -- menu pose (Concept by Wall_E20)
+
     if m.marioObj.header.gfx.animInfo.animID == charSelect.CS_ANIM_MENU then
         m.marioBodyState.eyeState = MARIO_EYES_LOOK_LEFT
     end
+
     -- wall spin
     if s.sonkSpin == true and m.action == ACT_TWIRLING then
         if m.vel.y < 10 then
