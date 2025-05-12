@@ -1,5 +1,7 @@
 local ACT_SONK_GP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_MOVING | ACT_FLAG_AIR)
 local ACT_WALL_SLIDE = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+local ACT_DIVE_POUND = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+local ACT_DIVE_POUND_LAND = allocate_mario_action(ACT_GROUP_STATIONARY | ACT_FLAG_IDLE | ACT_FLAG_ALLOW_FIRST_PERSON | ACT_FLAG_PAUSE_EXIT | ACT_FLAG_SHORT_HITBOX)
 
 local gSonkExtraStates = {}
 for i = 0, MAX_PLAYERS - 1 do
@@ -10,6 +12,35 @@ for i = 0, MAX_PLAYERS - 1 do
 end
 
 -- CUSTOM ACTIONS --
+
+function act_dive_pound(m)
+	if m.actionTimer < 2 then
+		play_sound(SOUND_ACTION_SPIN, m.marioObj.header.gfx.cameraToObject)
+	end
+    common_air_action_step(m, ACT_DIVE_POUND_LAND, MARIO_ANIM_START_GROUND_POUND, AIR_STEP_CHECK_LEDGE_GRAB)
+    m.actionTimer = m.actionTimer + 5
+    m.vel.y = m.vel.y - 30
+end
+
+hook_mario_action(ACT_DIVE_POUND, act_dive_pound, INT_GROUND_POUND)
+
+function act_dive_pound_land(m)
+    if m.actionTimer < 10 then 
+      m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE | PARTICLE_HORIZONTAL_STAR
+      play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING)
+      set_camera_shake_from_hit(SHAKE_GROUND_POUND)
+      m.actionTimer = m.actionTimer + 1
+      if m.actionTimer > 1 then 
+         m.vel.y = 50
+         m.forwardVel = 0
+         return set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
+      end
+    else
+      m.actionTimer = 0
+    end
+end
+
+hook_mario_action(ACT_DIVE_POUND_LAND, act_dive_pound_land, INT_GROUND_POUND)
 
 local function act_wall_slide(m)
     if (m.input & INPUT_A_PRESSED) ~= 0 then
@@ -257,6 +288,13 @@ function sonk_update(m)
     if actHandStates[m.action] then
         m.marioBodyState.handState = actHandStates[m.action]
     end      
+
+    -- Dive Pound
+    if m.action == ACT_DIVE or m.action == ACT_VERTICAL_WIND then
+        if m.vel.y < 0 and (m.input & INPUT_Z_PRESSED) ~= 0 then
+            set_mario_action(m, ACT_DIVE_POUND, 0)
+     end
+end
 
     -- disable tilt
     if m.action == ACT_WALKING then
