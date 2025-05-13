@@ -1,5 +1,5 @@
 -- name: [CS] Sonkie Herself! (wip)
--- description: The Tiny Horny (that means she has horns and the other meaning) Half Demon Lady! Thank you to Jer for the model! \n\n\\#ff7777\\This Pack requires Character Select\nto use as a Library!
+-- description: The Tiny Horny (that means she has horns) Half Demon Lady! Thank you to Jer for the model! \n\n\\#ff7777\\This Pack requires Character Select\nto use as a Library!
 
 local TEXT_MOD_NAME = "Sonkie"
 local TEXT_VERSION = "3.0"
@@ -117,6 +117,9 @@ local ANIMTABLE_SONKIE = {
         [CHAR_ANIM_START_RIDING_SHELL] = 'sonkie_start_riding_shell',
         [CHAR_ANIM_RIDING_SHELL] = 'sonkie_riding_shell',
         [CHAR_ANIM_JUMP_RIDING_SHELL] = 'sonkie_jump_shell',
+        [CHAR_ANIM_TRIPLE_JUMP_GROUND_POUND] = "sonkie_spinn",
+        [CHAR_ANIM_START_GROUND_POUND] = "sonkie_spinn",
+        [CHAR_ANIM_GROUND_POUND] = "sonkie_spinn",
         [charSelect.CS_ANIM_MENU] = "sonkie_menupose",
 }
 
@@ -138,7 +141,7 @@ local SONKIE_HEALTH_METER = {
 }
 
 if _G.charSelectExists then
-    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty tiny Demon lady is here to collect Some Stars! :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
+    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty Half Demon lady is here to collect Some Stars! :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
 end
 
 local CSloaded = false
@@ -147,7 +150,7 @@ local function on_character_select_load()
 	_G.charSelect.character_add_celebration_star(E_MODEL_SONKIE, E_MODEL_SQUISHYPLUSHIE)
 	_G.charSelect.character_add_animations(E_MODEL_SONKIE, ANIMTABLE_SONKIE)
     _G.charSelect.character_add_health_meter(CT_SONKIE, SONKIE_HEALTH_METER)
-    _G.charSelect.character_set_category(CT_SONKIE, "Sonkers")
+    _G.charSelect.character_set_category(CT_SONKIE, "Workshop")
 
     for i = 1, #sonkiepalettes do
         _G.charSelect.character_add_palette_preset(E_MODEL_SONKIE, sonkiepalettes[i], sonkiepalettes[i].name)
