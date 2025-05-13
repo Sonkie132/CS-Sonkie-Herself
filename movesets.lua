@@ -32,7 +32,6 @@ function act_dive_pound_land(m)
       m.actionTimer = m.actionTimer + 1
       if m.actionTimer > 1 then 
          m.vel.y = 50
-         m.forwardVel = 0
          return set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
       end
     else
