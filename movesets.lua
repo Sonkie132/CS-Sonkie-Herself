@@ -1,6 +1,6 @@
-local ACT_SONK_GP = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_MOVING | ACT_FLAG_AIR)
-local ACT_WALL_SLIDE = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
-local ACT_DIVE_POUND = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+local ACT_SONK_GP         = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_MOVING | ACT_FLAG_AIR)
+local ACT_WALL_SLIDE      = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_AIR | ACT_FLAG_MOVING | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
+local ACT_DIVE_POUND      = allocate_mario_action(ACT_GROUP_AIRBORNE | ACT_FLAG_ATTACKING | ACT_FLAG_AIR | ACT_FLAG_ALLOW_VERTICAL_WIND_ACTION)
 local ACT_DIVE_POUND_LAND = allocate_mario_action(ACT_GROUP_STATIONARY | ACT_FLAG_IDLE | ACT_FLAG_ALLOW_FIRST_PERSON | ACT_FLAG_PAUSE_EXIT | ACT_FLAG_SHORT_HITBOX)
 
 local gSonkExtraStates = {}
@@ -21,24 +21,22 @@ function act_dive_pound(m)
     m.actionTimer = m.actionTimer + 5
     m.vel.y = m.vel.y - 30
 end
-
 hook_mario_action(ACT_DIVE_POUND, act_dive_pound, INT_GROUND_POUND)
 
 function act_dive_pound_land(m)
     if m.actionTimer < 10 then 
-      m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE | PARTICLE_HORIZONTAL_STAR
-      play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING)
-      set_camera_shake_from_hit(SHAKE_GROUND_POUND)
-      m.actionTimer = m.actionTimer + 1
-      if m.actionTimer > 1 then 
-         m.vel.y = 50
-         return set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
-      end
+        m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE | PARTICLE_HORIZONTAL_STAR
+        play_mario_heavy_landing_sound(m, SOUND_ACTION_TERRAIN_HEAVY_LANDING)
+        set_camera_shake_from_hit(SHAKE_GROUND_POUND)
+        m.actionTimer = m.actionTimer + 1
+        if m.actionTimer > 1 then 
+            m.vel.y = 50
+            return set_mario_action(m, ACT_FORWARD_ROLLOUT, 0)
+        end
     else
-      m.actionTimer = 0
+        m.actionTimer = 0
     end
 end
-
 hook_mario_action(ACT_DIVE_POUND_LAND, act_dive_pound_land, INT_GROUND_POUND)
 
 local function act_wall_slide(m)
@@ -79,7 +77,6 @@ local function act_wall_slide(m)
 
     return 0
 end
-
 hook_mario_action(ACT_WALL_SLIDE, act_wall_slide)
 
 function act_sonkie_ground_pound(m)
@@ -157,8 +154,7 @@ function act_sonkie_ground_pound(m)
     
     return false
 end
-
-hook_mario_action(ACT_SONK_GP, { every_frame = act_sonkie_ground_pound }, INT_GROUND_POUND_OR_TWIRL)
+hook_mario_action(ACT_SONK_GP, act_sonkie_ground_pound, INT_GROUND_POUND_OR_TWIRL)
 
 -- UPDATES --
 
@@ -167,16 +163,17 @@ function sonk_on_set_action(m)
 
     -- ground pound
     if m.action == ACT_GROUND_POUND then
-        set_mario_action(m, ACT_SONK_GP, 0)
-
+        set_mario_action(m, ACT_SONK_GP, 0) 
     end
+
     -- wall spin
-    if m.action == ACT_BACKWARD_AIR_KB and ((m.input & INPUT_A_DOWN) ~= 0 or m.prevAction == ACT_SONK_GP) and m.wall ~= nil then
+    if m.action == ACT_BACKWARD_AIR_KB and ((m.input & INPUT_A_DOWN) ~= 0 or m.prevAction == ACT_SONK_GP) and m.wall then
         s.sonkSpin = true
         m.vel.y = 80
         m.faceAngle.y = atan2s(m.wall.normal.z, m.wall.normal.x)
         set_mario_action(m, ACT_TWIRLING, 0)
     end
+
     -- wall slide
     if m.action == ACT_SOFT_BONK then
         m.faceAngle.y = m.faceAngle.y + 0x8000
@@ -193,6 +190,8 @@ local actCapStates = {
     [ACT_VERTICAL_WIND] = MARIO_HAS_WING_CAP_ON,
     [ACT_TWIRLING] = MARIO_HAS_WING_CAP_ON,
     [ACT_DIVE] = MARIO_HAS_WING_CAP_ON,
+    [ACT_TRIPLE_JUMP_LAND] = MARIO_HAS_WING_CAP_ON,
+    [ACT_TRIPLE_JUMP_LAND_STOP] = MARIO_HAS_WING_CAP_ON,
 }
 
 local actEyeStates = {
@@ -205,6 +204,7 @@ local actEyeStates = {
     [ACT_SIDE_FLIP_LAND] = MARIO_EYES_LOOK_DOWN,
     [ACT_GROUND_POUND_LAND] = MARIO_EYES_LOOK_DOWN,
     [ACT_WALL_KICK_AIR] = MARIO_EYES_LOOK_DOWN,
+    [ACT_PICKING_UP] = MARIO_EYES_LOOK_DOWN,
     -- Look Up
     [ACT_DOUBLE_JUMP] = MARIO_EYES_LOOK_UP,
     [ACT_STAR_DANCE_NO_EXIT] = MARIO_EYES_LOOK_UP,
@@ -212,6 +212,7 @@ local actEyeStates = {
     [ACT_FLYING] = MARIO_EYES_LOOK_UP,
     [ACT_BACKFLIP] = MARIO_EYES_LOOK_UP,
     [ACT_LEDGE_GRAB] = MARIO_EYES_LOOK_UP,
+    [ACT_READING_NPC_DIALOG] = MARIO_EYES_LOOK_UP,
     -- Look Dead
     [ACT_SPECIAL_TRIPLE_JUMP] = MARIO_EYES_DEAD,
     [ACT_TRIPLE_JUMP] = MARIO_EYES_DEAD,
@@ -227,9 +228,14 @@ local actEyeStates = {
     [ACT_HARD_BACKWARD_GROUND_KB] = MARIO_EYES_DEAD,
     [ACT_DIVE_POUND] = MARIO_EYES_DEAD,
     [ACT_DIVE_POUND_LAND] = MARIO_EYES_DEAD,
-    [16910512] = MARIO_EYES_DEAD,
+    [ACT_BACKWARD_AIR_KB] = MARIO_EYES_DEAD,
+    [ACT_TRIPLE_JUMP_LAND] = MARIO_EYES_DEAD,
+    [ACT_TRIPLE_JUMP_LAND_STOP] = MARIO_EYES_DEAD,
     -- Look Right
     [ACT_TURNING_AROUND] = MARIO_EYES_LOOK_RIGHT,
+    [ACT_PUSHING_DOOR] = MARIO_EYES_LOOK_RIGHT,
+    -- Look Left
+    [ACT_PULLING_DOOR] = MARIO_EYES_LOOK_LEFT,
     -- Look Closed
     [ACT_JUMP_KICK] = MARIO_EYES_CLOSED,
     [ACT_PUNCHING] = MARIO_EYES_CLOSED,
@@ -237,13 +243,20 @@ local actEyeStates = {
     [ACT_TRIPLE_JUMP_LAND] = MARIO_EYES_CLOSED,
     [ACT_SOFT_BONK] = MARIO_EYES_CLOSED,
     [ACT_LONG_JUMP] = MARIO_EYES_CLOSED,
+    [ACT_BACKFLIP_LAND] = MARIO_EYES_CLOSED,
+    [ACT_BACKFLIP_LAND_STOP] = MARIO_EYES_CLOSED,
+    [ACT_JUMBO_STAR_CUTSCENE] = MARIO_EYES_CLOSED,
 }
 
 local actHandStates = {
     [ACT_FREEFALL] = MARIO_HAND_OPEN,
+    [ACT_HOLD_IDLE] = MARIO_HAND_OPEN,
+    [ACT_HOLD_JUMP] = MARIO_HAND_OPEN,
+    [ACT_HOLD_WALKING] = MARIO_HAND_OPEN,
+    [ACT_HOLD_DECELERATING] = MARIO_HAND_OPEN,
     [ACT_FREEFALL_LAND] = MARIO_HAND_OPEN,
     [ACT_LONG_JUMP] = MARIO_HAND_OPEN,
-    [ACT_DIVE] = MARIO_HAND_OPEN,
+    [ACT_DIVE] = MARIO_HAND_OPEN,     
     [ACT_TRIPLE_JUMP_LAND] = MARIO_HAND_OPEN,
     [ACT_DOUBLE_JUMP_LAND] = MARIO_HAND_OPEN,
     [ACT_FALL_AFTER_STAR_GRAB] = MARIO_HAND_OPEN,
@@ -258,17 +271,35 @@ local actHandStates = {
     [ACT_BACKFLIP] = MARIO_HAND_OPEN,
     [ACT_DIVE_POUND] = MARIO_HAND_OPEN,
     [ACT_DIVE_POUND_LAND] = MARIO_HAND_OPEN,
+    [ACT_BACKFLIP_LAND] = MARIO_HAND_OPEN,
+    [ACT_BACKFLIP_LAND_STOP] = MARIO_HAND_OPEN,
+    [ACT_TRIPLE_JUMP_LAND] = MARIO_HAND_OPEN,
+    [ACT_TRIPLE_JUMP_LAND_STOP] = MARIO_HAND_OPEN,
+    -- Right hand open
+    [ACT_THROWING] = MARIO_HAND_RIGHT_OPEN,
 }
+
 
 function sonk_update(m)
     local s = gSonkExtraStates[m.playerIndex]
 
     m.peakHeight = m.pos.y -- no fall damage
 
-    -- midair jump
-    local shouldMidairJump = (m.action == ACT_JUMP or m.action == ACT_DOUBLE_JUMP or m.action == ACT_HOLD_JUMP or m.action == ACT_LONG_JUMP or m.action == ACT_FREEFALL or m.action == ACT_WALL_KICK_AIR or m.action == ACT_BACKFLIP or m.action == ACT_SIDE_FLIP) and ((m.input & INPUT_A_PRESSED) ~= 0 and m.vel.y < 4)
+    local midairJumpActs = {
+        [ACT_JUMP] = 1,
+        [ACT_DOUBLE_JUMP] = 1,
+        [ACT_HOLD_JUMP] = 1,
+        [ACT_LONG_JUMP] = 1,
+        [ACT_FREEFALL] = 1,
+        [ACT_WALL_KICK_AIR] = 1,
+        [ACT_BACKFLIP] = 1,
+        [ACT_SIDE_FLIP] = 1,
+    }
+
+    -- midair jump     
+    local shouldMidairJump = midairJumpActs[m.action] and (m.input & INPUT_A_PRESSED ~= 0) and m.vel.y < 4
     
-    if shouldMidairJump and s.sonkDoubleJump == true then
+    if shouldMidairJump and s.sonkDoubleJump then
         m.faceAngle.y = m.intendedYaw
         m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
         set_mario_action(m, ACT_SPECIAL_TRIPLE_JUMP, 0)
@@ -276,28 +307,22 @@ function sonk_update(m)
         --m.forwardVel = 5
         s.sonkDoubleJump = false
     end
+
     -- reset midair jump
     if m.pos.y == m.floorHeight then
         s.sonkDoubleJump = true
     end
 
     -- Cap, Wing, and Hand States
-    if actCapStates[m.action] then
-        m.marioBodyState.capState = actCapStates[m.action]
-    end
-    if actEyeStates[m.action] then
-        m.marioBodyState.eyeState = actEyeStates[m.action]
-    end
-    if actHandStates[m.action] then
-        m.marioBodyState.handState = actHandStates[m.action]
-    end      
+    if actCapStates [m.action] then m.marioBodyState.capState  = actCapStates [m.action] end
+    if actEyeStates [m.action] then m.marioBodyState.eyeState  = actEyeStates [m.action] end
+    if actHandStates[m.action] then m.marioBodyState.handState = actHandStates[m.action] end
 
     -- Dive Pound
-    if m.action == ACT_DIVE or m.action == ACT_VERTICAL_WIND then
-        if m.vel.y < 0 and (m.input & INPUT_Z_PRESSED) ~= 0 then
-            set_mario_action(m, ACT_DIVE_POUND, 0)
-     end
-end
+    if (m.action == ACT_DIVE or m.action == ACT_VERTICAL_WIND)
+       and m.vel.y < 0 and (m.input & INPUT_Z_PRESSED ~= 0) then
+        set_mario_action(m, ACT_DIVE_POUND, 0)
+    end
 
     -- disable tilt
     if m.action == ACT_WALKING then
@@ -310,29 +335,19 @@ end
     end
 
     -- wall spin
-    if s.sonkSpin == true and m.action == ACT_TWIRLING then
-        if m.vel.y < 10 then
-            set_mario_action(m, ACT_FREEFALL, 0)
-            s.sonkSpin = false
-        end
+    if s.sonkSpin and m.action == ACT_TWIRLING and m.vel.y < 10 then
+        set_mario_action(m, ACT_FREEFALL, 0)
+        s.sonkSpin = false
     end
 
     -- wind
-    if m.action == ACT_DIVE then
-        if m.vel.y < 0 and (m.input & INPUT_A_PRESSED) ~= 0 then
-            m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
-            set_mario_action(m, ACT_VERTICAL_WIND, 0)
-            m.forwardVel = m.forwardVel + 3
-            m.vel.y = 35
-        end
-        --[[
-        if (m.input & INPUT_Z_PRESSED) ~= 0 then
-            set_mario_action(m, ACT_SONK_GP, 0)
-        end
-        ]]
+    if m.action == ACT_DIVE and m.vel.y < 0 and (m.input & INPUT_A_PRESSED ~= 0) then
+        m.particleFlags = m.particleFlags | PARTICLE_MIST_CIRCLE
+        set_mario_action(m, ACT_VERTICAL_WIND, 0)
+        m.forwardVel = m.forwardVel + 3
+        m.vel.y = 35
     end
 end
-
 
 _G.charSelect.character_hook_moveset(CT_SONKIE, HOOK_MARIO_UPDATE, sonk_update)
 _G.charSelect.character_hook_moveset(CT_SONKIE, HOOK_ON_SET_MARIO_ACTION, sonk_on_set_action)

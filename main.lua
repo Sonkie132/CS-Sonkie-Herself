@@ -129,14 +129,14 @@ local SONKIE_HEALTH_METER = {
 		right = get_texture_info("sonkie-hp-right")
 	},
 	pie = {
-		[1] = get_texture_info("sonkie-hp-1"),
-		[2] = get_texture_info("sonkie-hp-2"),
-		[3] = get_texture_info("sonkie-hp-3"),
-		[4] = get_texture_info("sonkie-hp-4"),
-		[5] = get_texture_info("sonkie-hp-5"),
-		[6] = get_texture_info("sonkie-hp-6"),
-		[7] = get_texture_info("sonkie-hp-7"),
-		[8] = get_texture_info("sonkie-hp-8")
+		get_texture_info("sonkie-hp-1"),
+		get_texture_info("sonkie-hp-2"),
+		get_texture_info("sonkie-hp-3"),
+		get_texture_info("sonkie-hp-4"),
+		get_texture_info("sonkie-hp-5"),
+		get_texture_info("sonkie-hp-6"),
+		get_texture_info("sonkie-hp-7"),
+		get_texture_info("sonkie-hp-8")
 	}
 }
 
