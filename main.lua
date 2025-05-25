@@ -141,7 +141,7 @@ local SONKIE_HEALTH_METER = {
 }
 
 if _G.charSelectExists then
-    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty Half Demon lady is here to collect Some Stars! :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
+    CT_SONKIE = _G.charSelect.character_add("Sonkie", {"The Pretty Horned Half Demon lady", "is here to collect Some Stars! :3"}, "Model: JerThePear", {r = 121, g = 58, b = 128},  E_MODEL_SONKIE, CT_MARIO, TEX_SONKIE_ICON) 
 end
 
 local CSloaded = false
@@ -150,7 +150,8 @@ local function on_character_select_load()
 	_G.charSelect.character_add_celebration_star(E_MODEL_SONKIE, E_MODEL_SQUISHYPLUSHIE)
 	_G.charSelect.character_add_animations(E_MODEL_SONKIE, ANIMTABLE_SONKIE)
     _G.charSelect.character_add_health_meter(CT_SONKIE, SONKIE_HEALTH_METER)
-    _G.charSelect.character_set_category(CT_SONKIE, "Workshop")
+    _G.charSelect.character_set_category(CT_SONKIE, "Hell-aven Pack")
+    _G.charSelect.character_set_category(CT_SONKIE, "Squishy Workshop")
 
     for i = 1, #sonkiepalettes do
         _G.charSelect.character_add_palette_preset(E_MODEL_SONKIE, sonkiepalettes[i], sonkiepalettes[i].name)
