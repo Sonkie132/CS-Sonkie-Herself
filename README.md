@@ -2,7 +2,7 @@ Da pretty Lil Lady! and also horny (because of her horns duh.)
 
 -- Credits --
 
--- Jer The Pear For model, anims, live icon and Moveset
+-- JerThePear For model, anims, live icon and Moveset
 
 -- Squishy For Creating Character Select
 
