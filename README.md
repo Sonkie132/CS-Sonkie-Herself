@@ -2,12 +2,12 @@ Da pretty Lil Lady! and also horny (because of her horns duh.)
 
 -- Credits --
 
--- JerThePear For model, anims, live icon and Moveset
+-- JerThePear for model, anims, life icon and moveset
 
--- Squishy For Creating Character Select
+-- Squishy for creating Character Select and moveset
 
--- Spr For Squishy Plushie Model
+-- Spr for Squishy Plushie model
 
 -- Myself for some tweaks to moveset, visual effects and health meter :3
 
-Warning! some anims are placeholders and are subject to change. if you see one of your anims here and they stay on the final product ill contact you so i have ur permission!
+Warning! Some anims are placeholders and are subject to change. If you see one of your anims here and they stay on the final product I'll contact you so I have your permission!
