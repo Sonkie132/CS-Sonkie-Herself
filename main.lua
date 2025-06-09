@@ -14,6 +14,7 @@ local E_MODEL_SONKIE = smlua_model_util_get_id("sonkie_geo")
 local E_MODEL_SQUISHYPLUSHIE = smlua_model_util_get_id("squishyplushie_geo")
 
 local TEX_SONKIE_ICON = get_texture_info("sonkie-icon")
+local TEX_SONKIETRANSITION = get_texture_info("sonkie-transition")
 
 local VOICETABLE_SONKS = {
     [CHAR_SOUND_ATTACKED] = 'Sonks_ay.ogg',
@@ -108,6 +109,16 @@ local sonkiepalettes = {
 
 }
 
+function texture_override_handle(textureName, overrideTexInfo)
+    local character = charSelect.character_get_current_number()
+
+    if character == CT_SONKIE then -- this first long line is the character check
+        texture_override_set(textureName, overrideTexInfo) -- this is a vanilla function which activates the dynos replacement
+    else
+        texture_override_reset(textureName) -- this function resets the texture back to its original which is why we want the texture handling to be in lua
+    end
+end
+
 local ANIMTABLE_SONKIE = {
         [CHAR_ANIM_IDLE_HEAD_CENTER] = 'sonkie_stealed_jess_idle',
         [CHAR_ANIM_IDLE_HEAD_LEFT] = 'sonkie_stealed_jess_idle',
@@ -120,6 +131,7 @@ local ANIMTABLE_SONKIE = {
         [CHAR_ANIM_TRIPLE_JUMP_GROUND_POUND] = "sonkie_spinn",
         [CHAR_ANIM_START_GROUND_POUND] = "sonkie_spinn",
         [CHAR_ANIM_GROUND_POUND] = "sonkie_spinn",
+        [CHAR_ANIM_DOUBLE_JUMP_FALL] = "sonkie_double_fall",
         [charSelect.CS_ANIM_MENU] = "sonkie_menupose",
 }
 
@@ -152,11 +164,15 @@ local function on_character_select_load()
     _G.charSelect.character_add_health_meter(CT_SONKIE, SONKIE_HEALTH_METER)
     _G.charSelect.character_set_category(CT_SONKIE, "Hell-aven Pack")
     _G.charSelect.character_set_category(CT_SONKIE, "Squishy Workshop")
+    
 
     for i = 1, #sonkiepalettes do
         _G.charSelect.character_add_palette_preset(E_MODEL_SONKIE, sonkiepalettes[i], sonkiepalettes[i].name)
     end
 
+    hook_event(HOOK_ON_HUD_RENDER_BEHIND, function()
+        texture_override_handle("texture_transition_mario", TEX_SONKIETRANSITION)
+    end)
     CSloaded = true
 end
 
